@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { ToastContext } from "./ToastContext";
 import ToastContainer from "./ToastContainer";
+import { registerToast } from "./toast-bridge";
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
@@ -16,6 +17,9 @@ export function ToastProvider({ children }) {
 
     setTimeout(() => removeToast(id), 4000);
   }, []);
+
+  // 🔥 Register global toast access
+  registerToast(showToast);
 
   return (
     <ToastContext.Provider value={{ showToast }}>

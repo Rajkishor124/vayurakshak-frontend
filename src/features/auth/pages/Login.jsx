@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import { useAuth } from "../../../context/auth/useAuth";
-import useToast from "../../../shared/toast/useToast";
+import useToast from "../../../ui/toast/useToast";
 
 export default function Login() {
   const [email, setEmail] = useState("");

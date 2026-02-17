@@ -4,7 +4,7 @@ import { fetchDashboard } from "../services/dashboardService";
 import { getSeverityStyles } from "../../../shared/utils/severityUtils";
 import FeatureGate from "../../../shared/components/FeatureGate";
 import RiskTrendChart from "../components/RiskTrendChart";
-import useToast from "../../../shared/toast/useToast";
+import useToast from "../../../ui/toast/useToast";
 
 export default function Dashboard() {
   const { orgId } = useAuth();

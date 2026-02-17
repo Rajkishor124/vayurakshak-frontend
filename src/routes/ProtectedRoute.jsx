@@ -3,23 +3,23 @@ import { useAuth } from "../context/auth/useAuth";
 
 export default function ProtectedRoute({
   children,
-  requiredRole,
-  requiredPlan,
+  requiredRoles = [],
+  requiredPlans = [],
 }) {
   const { isAuthenticated, role, subscriptionPlan } = useAuth();
 
-  // not logged in
+  // Not logged in
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // role restriction
-  if (requiredRole && role !== requiredRole) {
+  // Role restriction
+  if (requiredRoles.length > 0 && !requiredRoles.includes(role)) {
     return <Navigate to="/forbidden" replace />;
   }
 
-  // plan restriction
-  if (requiredPlan && subscriptionPlan !== requiredPlan) {
+  // Plan restriction
+  if (requiredPlans.length > 0 && !requiredPlans.includes(subscriptionPlan)) {
     return <Navigate to="/forbidden" replace />;
   }
 

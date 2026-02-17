@@ -3,22 +3,27 @@ import { decodeToken } from "../../lib/jwtUtils";
 import { storage } from "../../lib/storage";
 import { AuthContext } from "./AuthContext";
 
+const getValidToken = () => {
+  const token = storage.getToken();
+  if (!token) return null;
+
+  const decoded = decodeToken(token);
+  if (!decoded || !decoded.exp) {
+    storage.clear();
+    return null;
+  }
+
+  const isExpired = decoded.exp * 1000 < Date.now();
+  if (isExpired) {
+    storage.clear();
+    return null;
+  }
+
+  return token;
+};
+
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(storage.getToken());
-
-  const user = useMemo(() => {
-    if (!token) return null;
-
-    const decoded = decodeToken(token);
-    if (!decoded) return null;
-
-    return {
-      orgId: decoded.orgId || decoded.org_id,
-      role:
-        decoded.role || decoded.authorities?.[0]?.replace("ROLE_", "") || null,
-      subscriptionPlan: decoded.subscriptionPlan || decoded.plan || null,
-    };
-  }, [token]);
+  const [token, setToken] = useState(getValidToken);
 
   const login = (authData) => {
     if (!authData?.token) return;
@@ -32,6 +37,28 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
   };
 
+  const user = useMemo(() => {
+    if (!token) return null;
+
+    const decoded = decodeToken(token);
+    if (!decoded) return null;
+
+    const orgId = decoded.orgId || decoded.org_id;
+    const role =
+      decoded.role || decoded.authorities?.[0]?.replace("ROLE_", "") || null;
+    const subscriptionPlan = decoded.subscriptionPlan || decoded.plan || null;
+
+    if (orgId) {
+      storage.setOrgId(orgId);
+    }
+
+    return {
+      orgId,
+      role,
+      subscriptionPlan,
+    };
+  }, [token]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -40,10 +67,7 @@ export const AuthProvider = ({ children }) => {
         orgId: user?.orgId,
         role: user?.role,
         subscriptionPlan: user?.subscriptionPlan,
-
-        // ✅ FIX: authentication must rely on token
         isAuthenticated: !!token,
-
         login,
         logout,
       }}

@@ -20,7 +20,7 @@ export default function Login() {
     try {
       const response = await loginUser({ email, password });
 
-      login(response.data); // save token
+      login(response);
 
       showToast("Login successful 🎉", "success");
 

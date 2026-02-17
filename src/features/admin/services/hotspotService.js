@@ -5,5 +5,7 @@ export const fetchHotspots = async () => {
   const orgId = storage.getOrgId();
   if (!orgId) throw new Error("Organization not found");
 
-  return apiClient.get(`/api/v1/org/${orgId}/hotspots`);
+  const response = await apiClient.get(`/api/v1/org/${orgId}/hotspots`);
+
+  return response.data;
 };

@@ -5,5 +5,7 @@ export const fetchAlerts = async () => {
   const orgId = storage.getOrgId();
   if (!orgId) throw new Error("Organization not found");
 
-  return apiClient.get(`/api/v1/org/${orgId}/alerts`);
+  const response = await apiClient.get(`/api/v1/org/${orgId}/alerts`);
+
+  return response.data;
 };

@@ -1,16 +1,23 @@
 import apiClient from "../../../lib/apiClient";
 import { storage } from "../../../lib/storage";
 
-export const createReport = async (reportData) => {
+const getOrgIdOrThrow = () => {
   const orgId = storage.getOrgId();
   if (!orgId) throw new Error("Organization not found");
+  return orgId;
+};
 
-  return apiClient.post(`/api/v1/org/${orgId}/reports`, reportData);
+export const createReport = async (reportData) => {
+  const orgId = getOrgIdOrThrow();
+  const response = await apiClient.post(
+    `/api/v1/org/${orgId}/reports`,
+    reportData,
+  );
+  return response.data;
 };
 
 export const fetchReports = async () => {
-  const orgId = storage.getOrgId();
-  if (!orgId) throw new Error("Organization not found");
-
-  return apiClient.get(`/api/v1/org/${orgId}/reports`);
+  const orgId = getOrgIdOrThrow();
+  const response = await apiClient.get(`/api/v1/org/${orgId}/reports`);
+  return response.data;
 };

@@ -38,7 +38,7 @@ export default function Register() {
       showToast("Account created successfully 🎉", "success");
 
       if (response.token) {
-        login(response.data);
+        login(response);
         navigate("/dashboard");
       } else {
         navigate("/login");

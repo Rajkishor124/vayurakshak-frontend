@@ -1,5 +1,7 @@
 import apiClient from "../../../lib/apiClient";
 
 export const getPersonalizedAdvice = async (payload) => {
-  return apiClient.post("/api/v1/advice", payload);
+  const response = await apiClient.post("/api/v1/advice", payload);
+
+  return response.data;
 };

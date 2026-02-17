@@ -1,49 +1,30 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../../context/auth/useAuth";
 import { fetchDashboard } from "../services/dashboardService";
 import { getSeverityStyles } from "../../../shared/utils/severityUtils";
 import FeatureGate from "../../../shared/components/FeatureGate";
 import RiskTrendChart from "../components/RiskTrendChart";
-import useToast from "../../../ui/toast/useToast";
 
 export default function Dashboard() {
-  const { orgId } = useAuth();
-  const { showToast } = useToast();
-
   const [data, setData] = useState(null);
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!orgId) return;
-
     const loadDashboard = async () => {
       try {
-        const response = await fetchDashboard(orgId);
-        setData(response);
+        const dashboardData = await fetchDashboard();
+        setData(dashboardData);
       } catch (err) {
-        setError(err);
-        showToast("Failed to load dashboard", "error");
+        // No manual toast here.
+        // Axios interceptor already shows global error toast.
+        console.error("Dashboard load failed:", err);
       }
     };
 
     loadDashboard();
-  }, [orgId]);
-
-  if (error) {
-    return <div className="p-6 text-red-600">{error}</div>;
-  }
+  }, []);
 
   if (!data) {
-    return (
-      <div className="p-6 space-y-6">
-        <div className="h-24 bg-gray-200 animate-pulse rounded-xl" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="h-40 bg-gray-200 animate-pulse rounded-xl" />
-          <div className="h-40 bg-gray-200 animate-pulse rounded-xl" />
-        </div>
-        <div className="h-60 bg-gray-200 animate-pulse rounded-xl" />
-      </div>
-    );
+    return null;
+    // Global loader already shows spinner
   }
 
   const trendData = [

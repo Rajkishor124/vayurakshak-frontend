@@ -4,6 +4,8 @@ import Login from "../features/auth/pages/Login";
 import Register from "../features/auth/pages/Register";
 import Dashboard from "../features/dashboard/pages/Dashboard";
 import AdminPanel from "../features/admin/pages/AdminPanel";
+import Subscription from "../features/subscription/pages/Subscription";
+import Reports from "../features/reports/pages/Reports";
 import Forbidden from "./Forbidden";
 
 import ProtectedRoute from "./ProtectedRoute";
@@ -44,6 +46,7 @@ export default function AppRoutes() {
 
       {/* ================= PROTECTED ROUTES ================= */}
 
+      {/* Dashboard - Any logged-in user */}
       <Route
         path="/dashboard"
         element={
@@ -55,10 +58,35 @@ export default function AppRoutes() {
         }
       />
 
+      {/* Reports - PRO + ENTERPRISE */}
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute requiredPlans={["PRO", "ENTERPRISE"]}>
+            <MainLayout>
+              <Reports />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Subscription - Any logged-in user */}
+      <Route
+        path="/subscription"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Subscription />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Admin - ADMIN only */}
       <Route
         path="/admin"
         element={
-          <ProtectedRoute requiredRole="ADMIN">
+          <ProtectedRoute requiredRoles={["ADMIN"]}>
             <MainLayout>
               <AdminPanel />
             </MainLayout>
@@ -66,11 +94,14 @@ export default function AppRoutes() {
         }
       />
 
-      {/* Enterprise Only Route */}
+      {/* Predictive - ADMIN + ENTERPRISE */}
       <Route
         path="/predictive"
         element={
-          <ProtectedRoute requiredRole="ADMIN" requiredPlan="ENTERPRISE">
+          <ProtectedRoute
+            requiredRoles={["ADMIN"]}
+            requiredPlans={["ENTERPRISE"]}
+          >
             <MainLayout>
               <div className="p-6">Predictive Insights Page</div>
             </MainLayout>
@@ -82,10 +113,8 @@ export default function AppRoutes() {
 
       <Route path="/forbidden" element={<Forbidden />} />
 
-      {/* default redirect */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-      {/* fallback */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );

@@ -3,6 +3,7 @@ import LoadingProvider from "../ui/loading/LoadingProvider";
 import GlobalLoader from "../shared/components/GlobalLoader";
 import { ToastProvider } from "../ui/toast/ToastProvider";
 import ErrorBoundary from "../ui/error/ErrorBoundary";
+import ModalProvider from "../ui/modal/ModalProvider";
 
 export default function Providers({ children }) {
   return (
@@ -10,8 +11,10 @@ export default function Providers({ children }) {
       <AuthProvider>
         <LoadingProvider>
           <ToastProvider>
-            <GlobalLoader />
-            {children}
+            <ModalProvider>
+              <GlobalLoader />
+              {children}
+            </ModalProvider>
           </ToastProvider>
         </LoadingProvider>
       </AuthProvider>

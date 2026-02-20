@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth/useAuth";
 import { navigationItems } from "../navigation.config";
 import useModal from "../../ui/modal/useModal";
@@ -6,6 +6,7 @@ import useModal from "../../ui/modal/useModal";
 export default function Sidebar() {
   const { role, subscriptionPlan } = useAuth();
   const { openModal, closeModal } = useModal();
+  const navigate = useNavigate();
 
   const visibleItems = navigationItems.filter((item) =>
     item.roles.includes(role),
@@ -21,28 +22,19 @@ export default function Sidebar() {
             This feature is not available in your current plan.
           </p>
 
-          <div className="mt-6 space-y-3">
-            <div className="p-3 border rounded-lg">
-              <p className="font-semibold">PRO Plan</p>
-              <p className="text-sm text-gray-500">
-                Access advanced analytics & risk trends.
-              </p>
-            </div>
+          <div className="flex justify-end gap-3 mt-6">
+            <button onClick={closeModal} className="px-4 py-2 border rounded">
+              Cancel
+            </button>
 
-            <div className="p-3 border rounded-lg">
-              <p className="font-semibold">ENTERPRISE Plan</p>
-              <p className="text-sm text-gray-500">
-                Unlock predictive insights & smart alerts.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex justify-end mt-6">
             <button
-              onClick={closeModal}
+              onClick={() => {
+                closeModal();
+                navigate("/subscription");
+              }}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
             >
-              Close
+              Upgrade Plan
             </button>
           </div>
         </>

@@ -44,8 +44,11 @@ export const AuthProvider = ({ children }) => {
     if (!decoded) return null;
 
     const orgId = decoded.orgId || decoded.org_id;
-    const role =
-      decoded.role || decoded.authorities?.[0]?.replace("ROLE_", "") || null;
+
+    const rawRole = decoded.role || decoded.authorities?.[0] || null;
+
+    const role = rawRole?.replace("ROLE_", "") || null;
+
     const subscriptionPlan = decoded.subscriptionPlan || decoded.plan || null;
 
     if (orgId) {
